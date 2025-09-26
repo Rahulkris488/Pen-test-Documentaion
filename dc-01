@@ -134,7 +134,7 @@ DB Creds	Found in settings.php
 Hash Dump	admin & Fred
 Priv Esc	SUID abuse with find
 Root Access	Achieved
-Final Flag	Retrieved from /root
+Final Flag	Retrieved from /root 
 
 🧰 Tools Used
 Nmap
@@ -159,4 +159,4 @@ Enumeration skills
 Time Taken: ~1–2 hours
 
 Credits: CTF by @DCAU7
-Writeup: Authored by Rahul Krishna TP
+Writeup: Authored by Rahul Krishna 
